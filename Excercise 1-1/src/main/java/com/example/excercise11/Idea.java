@@ -1,5 +1,7 @@
 package com.example.excercise11;
 
+import net.minidev.json.annotate.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +13,17 @@ public class Idea {
     private String title;
     private String description;
 
+    @ManyToOne()
+    @JsonIgnore
+    private Category category;
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public int getId() {
         return id;
