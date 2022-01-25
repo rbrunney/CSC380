@@ -24,7 +24,7 @@ public class Security extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserJPARepository userJPA;
 
-    public static InMemoryUserDetailsManager memAuth = new InMemoryUserDetailsManager();
+    static InMemoryUserDetailsManager memAuth = new InMemoryUserDetailsManager();
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -56,8 +56,10 @@ public class Security extends WebSecurityConfigurerAdapter {
         //Block Certain HTTP Request by typing HTTP.<RequestMethod> in the antMatchers
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                 .antMatchers("/users/createUser").permitAll()
                 .antMatchers(HttpMethod.GET, "/users/forgotPassword").permitAll()
+                .antMatchers("/users/forgotPassword").hasRole("USER")
                 .antMatchers("/users/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/offers/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/videoGames/**").hasAnyRole("ADMIN", "USER")

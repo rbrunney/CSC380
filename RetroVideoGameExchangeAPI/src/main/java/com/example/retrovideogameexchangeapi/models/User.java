@@ -1,6 +1,7 @@
 package com.example.retrovideogameexchangeapi.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -48,6 +49,10 @@ public class User extends RepresentationModel<User> {
 
     }
 
+    public User(String name) {
+        this.name = name;
+    }
+
     public User(int id, List<VideoGame> gamesToTrade, List<Offer> currentOffers, String name, String password, String emailAddress, String streetAddress) {
         this.id = id;
         this.gamesToTrade = gamesToTrade;
@@ -93,7 +98,7 @@ public class User extends RepresentationModel<User> {
     }
 
     public void setPassword(String password) {
-        String regexPassword = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\\[\\]{};:'\"<>,.\\/?]).{8,}$";
+        String regexPassword = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\\[\\]{};'\"<>,.\\/?]).{8,}$";
         if(CheckMatch(password, regexPassword).find()) {
             this.password = password;
         } else {
@@ -120,19 +125,21 @@ public class User extends RepresentationModel<User> {
     }
 
     public void setStreetAddress(String streetAddress) {
-        String regexAddress = "^([a-zA-Z]+|[0-9]+)(\\sNorth|\\sEast|\\sSouth|\\sWest|\\sN|\\sE|\\sW|\\sS)?"           //Checks for Street or Number
-                + "\\s([a-zA-Z0-9]+(?:[\\s][a-zA-Z0-9]+)*)(\\sNorth|\\sEast|\\sSouth|\\sWest|\\sN|\\sE|\\sW|\\sS)?"   //Checks for Street or Number Again
-                + "(,\\sApt\\s[0-9]+|,\\sSuite\\s[0-9]+|,\\s[0-9]+)?"                                                 //Checks for Optional Unit Number
-                + "\\n([a-zA-Z]+(?:[\\s-][a-zA-Z]+)*)([,][\\s]?[A-Z]{2})"                                             //Checks for City and State Abbreviation
-                + "(\\n[0-9]{5}|\\n[0-9]{5}[-][0-9]{4})?(\\s[0-9]{5}|\\s[0-9]{5}[-][0-9]{4})$";                       //Checks for Zipcode
+//        String regexAddress = "^([a-zA-Z]+|[0-9]+)(\\sNorth|\\sEast|\\sSouth|\\sWest|\\sN|\\sE|\\sW|\\sS)?"           //Checks for Street or Number
+//                + "\\s([a-zA-Z0-9]+(?:[\\s][a-zA-Z0-9]+)*)(\\sNorth|\\sEast|\\sSouth|\\sWest|\\sN|\\sE|\\sW|\\sS)?"   //Checks for Street or Number Again
+//                + "(,\\sApt\\s[0-9]+|,\\sSuite\\s[0-9]+|,\\s[0-9]+)?"                                                 //Checks for Optional Unit Number
+//                + "\\n([a-zA-Z]+(?:[\\s-][a-zA-Z]+)*)([,][\\s]?[A-Z]{2})"                                             //Checks for City and State Abbreviation
+//                + "(\\n[0-9]{5}|\\n[0-9]{5}[-][0-9]{4})?(\\s[0-9]{5}|\\s[0-9]{5}[-][0-9]{4})$";                       //Checks for Zipcode
         if(streetAddress.isEmpty()) {
             throw new NullPointerException("Address was empty");
         }
-        if(CheckMatch(streetAddress, regexAddress).find()) {
-            this.streetAddress = streetAddress;
-        } else {
-            throw new IllegalArgumentException("Address was invalid");
-        }
+//        if(CheckMatch(streetAddress, regexAddress).find()) {
+//            this.streetAddress = streetAddress;
+//        } else {
+//            throw new IllegalArgumentException("Address was invalid");
+//        }
+
+        this.streetAddress = streetAddress;
     }
 
     public List<Offer> getCurrentOffers() {
@@ -150,4 +157,6 @@ public class User extends RepresentationModel<User> {
     public void setOutboundOffers(List<Offer> outboundOffers) {
         this.outboundOffers = outboundOffers;
     }
+
+
 }

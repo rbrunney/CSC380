@@ -1,13 +1,15 @@
 package com.example.retrovideogameexchangeapi.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import net.minidev.json.annotate.JsonIgnore;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class VideoGame {
+public class VideoGame extends RepresentationModel<VideoGame> {
     ///// Properties ////////////////////
 
     public enum GameCondition {Mint, Good, Fair, Poor}
@@ -22,7 +24,7 @@ public class VideoGame {
 
     @ManyToMany()
     @JsonIgnore()
-    private List<Offer> offer = new ArrayList<>();
+    private List<Offer> offers = new ArrayList<>();
 
     @Column(nullable = false)
     private String name;
@@ -45,7 +47,7 @@ public class VideoGame {
     public VideoGame(int id, User user, List<Offer> offer, String name, String publisher, int publishYear, String gamingSystem, GameCondition gamingCondition, int previousOwners) {
         this.id = id;
         this.user = user;
-        this.offer = offer;
+        this.offers = offer;
         this.name = name;
         this.publisher = publisher;
         this.publishYear = publishYear;
@@ -135,5 +137,11 @@ public class VideoGame {
         this.previousOwners = previousOwners;
     }
 
+    public List<Offer> getOffers() {
+        return offers;
+    }
 
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
+    }
 }

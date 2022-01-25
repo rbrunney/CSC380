@@ -9,4 +9,6 @@ import java.util.List;
 @RepositoryRestResource
 public interface OfferJPARepository extends JpaRepository<Offer, Integer> {
 
+    List<Offer> findByCurrentState(Offer.CurrentState status);
+    Offer getFirstById(int id);
 }

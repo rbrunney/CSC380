@@ -1,5 +1,6 @@
 package com.example.retrovideogameexchangeapi.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -25,7 +26,7 @@ public class Offer extends RepresentationModel<Offer> {
     private User offeringUser;
 
     @ManyToMany()
-    @JoinTable(name = "offered_videoGames", joinColumns = @JoinColumn(name = "videoGame_id"),inverseJoinColumns = @JoinColumn(name = "offer_id"))
+    @JoinTable(name = "offered_videoGames", joinColumns = @JoinColumn(name = "offer_id"),inverseJoinColumns = @JoinColumn(name = "videoGame_id"))
     private List<VideoGame> offeredVideoGames = new ArrayList<>();
 
     //*** User being asked for a trade
@@ -34,13 +35,13 @@ public class Offer extends RepresentationModel<Offer> {
     private User receivingUser;
 
     @ManyToMany()
-    @JoinTable(name = "requested_videoGames", joinColumns = @JoinColumn(name = "videoGame_id"),inverseJoinColumns = @JoinColumn(name = "offer_id"))
+    @JoinTable(name = "requested_videoGames", joinColumns = @JoinColumn(name = "offer_id"),inverseJoinColumns = @JoinColumn(name = "videoGame_id"))
     private List<VideoGame> requestedVideoGames = new ArrayList<>();
 
     @Column(nullable = false)
     private CurrentState currentState;
 
-    private String dateOfferMade;
+    private String dateOfferMade = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(LocalDateTime.now());
 
     ///// Other Methods //////////////////////////
 
@@ -49,13 +50,13 @@ public class Offer extends RepresentationModel<Offer> {
 
     }
 
-    public Offer(int id, User offeringUser, List<VideoGame> offeredVideoGames, User receivingUser, List<VideoGame> requestedVideoGames, CurrentState currentState) {
-        this.id = id;
+    public Offer(int id, User offeringUser, List<VideoGame> offeredVideoGames, User receivingUser, List<VideoGame> requestedVideoGames, CurrentState currentState, String dateOfferMade) {
         this.offeringUser = offeringUser;
         this.offeredVideoGames = offeredVideoGames;
         this.receivingUser = receivingUser;
         this.requestedVideoGames = requestedVideoGames;
         this.currentState = currentState;
+        this.dateOfferMade = dateOfferMade;
     }
 
 
@@ -109,11 +110,11 @@ public class Offer extends RepresentationModel<Offer> {
         this.currentState = currentState;
     }
 
-    public String getDateOfferMade() {
-        return dateOfferMade;
-    }
-
-    public void setDateOfferMade() {
-        this.dateOfferMade = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(LocalDateTime.now());
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "currentState=" + currentState +
+                ", dateOfferMade='" + dateOfferMade + '\'' +
+                '}';
     }
 }
