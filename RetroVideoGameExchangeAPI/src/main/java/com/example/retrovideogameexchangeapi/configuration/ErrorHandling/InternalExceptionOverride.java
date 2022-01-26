@@ -1,4 +1,4 @@
-package com.example.retrovideogameexchangeapi.util.ErrorHandling;
+package com.example.retrovideogameexchangeapi.configuration.ErrorHandling;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

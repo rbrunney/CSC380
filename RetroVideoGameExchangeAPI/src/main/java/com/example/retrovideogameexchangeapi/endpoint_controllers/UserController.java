@@ -20,16 +20,16 @@ public class UserController {
         return userBLL.getUserInfo(authHead, id);
     }
 
+    @PostMapping(path = "")
+    @ResponseStatus(code= HttpStatus.CREATED)
+    public User createUser(@RequestBody User user) {
+        return userBLL.createUser(user);
+    }
+
     @DeleteMapping(path="/{id}")
     @ResponseStatus(code=HttpStatus.NO_CONTENT)
     public void deleteUser(@RequestHeader(value="Authorization") String authHead, @PathVariable int id) {
         userBLL.deleteUser(authHead, id);
-    }
-
-    @PostMapping(path = "/createUser")
-    @ResponseStatus(code= HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userBLL.createUser(user);
     }
 
     @GetMapping(path="/forgotPassword")

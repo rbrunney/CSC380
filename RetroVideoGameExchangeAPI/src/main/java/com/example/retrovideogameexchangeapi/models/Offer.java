@@ -1,13 +1,11 @@
 package com.example.retrovideogameexchangeapi.models;
 
 import com.example.retrovideogameexchangeapi.util.ViewLevel;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
-import javax.swing.text.View;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

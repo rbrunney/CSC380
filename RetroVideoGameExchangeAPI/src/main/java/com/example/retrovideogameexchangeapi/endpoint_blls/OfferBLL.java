@@ -1,7 +1,6 @@
 package com.example.retrovideogameexchangeapi.endpoint_blls;
 
 import com.example.retrovideogameexchangeapi.endpoint_controllers.OfferController;
-import com.example.retrovideogameexchangeapi.endpoint_controllers.VideoGameController;
 import com.example.retrovideogameexchangeapi.models.Offer;
 import com.example.retrovideogameexchangeapi.models.User;
 import com.example.retrovideogameexchangeapi.models.VideoGame;
@@ -14,7 +13,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;

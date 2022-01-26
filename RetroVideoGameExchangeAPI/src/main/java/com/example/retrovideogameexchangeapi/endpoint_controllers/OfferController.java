@@ -2,14 +2,10 @@ package com.example.retrovideogameexchangeapi.endpoint_controllers;
 
 import com.example.retrovideogameexchangeapi.endpoint_blls.OfferBLL;
 import com.example.retrovideogameexchangeapi.models.Offer;
-import com.example.retrovideogameexchangeapi.util.ViewLevel;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path="offers")
