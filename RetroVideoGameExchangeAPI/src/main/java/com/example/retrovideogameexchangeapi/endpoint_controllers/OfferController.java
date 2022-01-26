@@ -2,9 +2,14 @@ package com.example.retrovideogameexchangeapi.endpoint_controllers;
 
 import com.example.retrovideogameexchangeapi.endpoint_blls.OfferBLL;
 import com.example.retrovideogameexchangeapi.models.Offer;
+import com.example.retrovideogameexchangeapi.util.ViewLevel;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path="offers")
@@ -15,11 +20,17 @@ public class OfferController {
 
     ///// Endpoints //////////////////////////
 
-//    @GetMapping(path="")
-//    @ResponseStatus(code= HttpStatus.OK)
-//    public List<Offer> getOffer(@RequestParam(required = false) Offer.CurrentState filteredStatus) {
-//        return offerBLL.getOffers(filteredStatus);
-//    }
+    @GetMapping(path="")
+    @ResponseStatus(code= HttpStatus.OK)
+    public CollectionModel<Offer> getOffer(@RequestParam(required = false) Offer.CurrentState filteredStatus) {
+        return offerBLL.getOffers(filteredStatus);
+    }
+
+    @PostMapping(path="")
+    @ResponseStatus(code=HttpStatus.OK)
+    public Offer createOffer(@RequestHeader(value="Authorization") String authHead, @RequestBody Offer offer) {
+        return offerBLL.createOffer(authHead, offer);
+    }
 
     @GetMapping(path="/{id}")
     @ResponseStatus(code=HttpStatus.OK)

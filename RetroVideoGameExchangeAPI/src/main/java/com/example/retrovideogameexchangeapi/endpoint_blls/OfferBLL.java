@@ -1,5 +1,7 @@
 package com.example.retrovideogameexchangeapi.endpoint_blls;
 
+import com.example.retrovideogameexchangeapi.endpoint_controllers.OfferController;
+import com.example.retrovideogameexchangeapi.endpoint_controllers.VideoGameController;
 import com.example.retrovideogameexchangeapi.models.Offer;
 import com.example.retrovideogameexchangeapi.models.User;
 import com.example.retrovideogameexchangeapi.models.VideoGame;
@@ -7,11 +9,15 @@ import com.example.retrovideogameexchangeapi.repositories.OfferJPARepository;
 import com.example.retrovideogameexchangeapi.repositories.UserJPARepository;
 import com.example.retrovideogameexchangeapi.util.MyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Service
 public class OfferBLL {
@@ -32,26 +38,58 @@ public class OfferBLL {
         return currentOffer;
     }
 
-    public List<Offer> getOffers(Offer.CurrentState filteredStatus) {
-        for (Offer.CurrentState status : Offer.CurrentState.values()) {
-            if (status == filteredStatus) {
-                return offerJPA.findByCurrentState(filteredStatus);
+    public CollectionModel<Offer> getOffers(Offer.CurrentState filteredStatus) {
+        for(Offer.CurrentState status : Offer.CurrentState.values()) {
+            if(status == filteredStatus) {
+                List<Offer> foundOffers = offerJPA.findByCurrentState(filteredStatus);
+                for(Offer offer : foundOffers) {
+                    for(Link link : generateOfferLinks(offer.getId())) {
+                        offer.add(link);
+                    }
+                }
+                return CollectionModel.of(foundOffers, linkTo(OfferController.class).withSelfRel());
             }
-        }
-
-        if(filteredStatus != null) {
-            return new ArrayList<>();
         }
 
         List<Offer> offers = offerJPA.findAll();
 
         for(Offer offer : offers) {
-            for(Link link : generateOfferLinks(offer.getId())) {
-                offer.add(link);
-            }
+           for(Link link : generateOfferLinks(offer.getId())) {
+               offer.add(link);
+           }
         }
 
-        return offers;
+        return CollectionModel.of(offers, linkTo(OfferController.class).withSelfRel());
+    }
+
+    public Offer createOffer(String authHead, Offer offer) {
+        User user = userJPA.getByEmailAddress(MyUtils.decodeAuth(authHead)[0]);
+
+        if(user != null) {
+            for(VideoGame game : offer.getOfferedVideoGames()) {
+                if(game.getUser().getId() != user.getId()) {
+                    throw new IllegalArgumentException("You can't offer somebody else's game");
+                }
+            }
+
+            for(VideoGame game : offer.getRequestedVideoGames()) {
+                if(game.getUser().getId() != offer.getReceivingUser().getId()) {
+                    throw new IllegalArgumentException("Make sure you are asking for the right user for the game");
+                }
+            }
+
+            if(offer.getCurrentState() != Offer.CurrentState.Pending) {
+                offer.setCurrentState(Offer.CurrentState.Pending);
+            }
+
+            offerJPA.save(offer);
+        }
+
+        for(Link link : generateOfferLinks(offer.getId())) {
+            offer.add(link);
+        }
+
+        return offer;
     }
 
     public void deleteOffer(String authHead, int id) {

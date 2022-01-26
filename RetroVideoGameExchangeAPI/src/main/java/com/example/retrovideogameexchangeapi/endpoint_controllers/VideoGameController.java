@@ -3,7 +3,7 @@ package com.example.retrovideogameexchangeapi.endpoint_controllers;
 import com.example.retrovideogameexchangeapi.endpoint_blls.VideoGameBLL;
 import com.example.retrovideogameexchangeapi.models.VideoGame;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +15,12 @@ public class VideoGameController {
     private VideoGameBLL videoGameBLL;
 
     ///// End Points ///////////////////////////////////////////////////////////////
+
+    @GetMapping(path="")
+    @ResponseStatus(code=HttpStatus.OK)
+    public CollectionModel<VideoGame> getVideoGames() {
+        return videoGameBLL.getVideoGames();
+    }
 
     @PostMapping(path="")
     public VideoGame createVideoGame(@RequestHeader(value="Authorization") String authHead, @RequestBody VideoGame newGame) {

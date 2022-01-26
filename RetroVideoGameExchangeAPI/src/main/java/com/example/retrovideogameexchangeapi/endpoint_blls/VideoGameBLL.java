@@ -1,15 +1,22 @@
 package com.example.retrovideogameexchangeapi.endpoint_blls;
 
+import com.example.retrovideogameexchangeapi.endpoint_controllers.OfferController;
+import com.example.retrovideogameexchangeapi.endpoint_controllers.VideoGameController;
+import com.example.retrovideogameexchangeapi.models.Offer;
 import com.example.retrovideogameexchangeapi.models.User;
 import com.example.retrovideogameexchangeapi.models.VideoGame;
 import com.example.retrovideogameexchangeapi.repositories.UserJPARepository;
 import com.example.retrovideogameexchangeapi.repositories.VideoGameJPARepository;
 import com.example.retrovideogameexchangeapi.util.MyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Service
 public class VideoGameBLL {
@@ -40,6 +47,18 @@ public class VideoGameBLL {
         }
 
         return currentVideoGame;
+    }
+
+    public CollectionModel<VideoGame> getVideoGames() {
+        List<VideoGame> videoGames = videoGameJPA.findAll();
+
+        for(VideoGame videoGame : videoGames) {
+            for(Link link : generateVideoGamesLinks(videoGame.getId())) {
+                videoGame.add(link);
+            }
+        }
+
+        return CollectionModel.of(videoGames, linkTo(VideoGameController.class).withSelfRel());
     }
 
     public void deleteVideoGame(String authHead, int id) {

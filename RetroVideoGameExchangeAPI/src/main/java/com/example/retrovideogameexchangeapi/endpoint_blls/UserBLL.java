@@ -91,8 +91,8 @@ public class UserBLL {
 
         StringBuilder tempPassword = new StringBuilder();
         Random rand = new Random();
-
-        while(tempPassword.length() < 16) {
+        int passwordLength = rand.nextInt(20) + 12;
+        while(tempPassword.length() < passwordLength) {
             tempPassword.append(tempNums.charAt(rand.nextInt(tempNums.length())));
             tempPassword.append(tempLowLetters.charAt(rand.nextInt(tempLowLetters.length())));
             tempPassword.append(tempUpLetters.charAt(rand.nextInt(tempUpLetters.length())));
