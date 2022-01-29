@@ -1,10 +1,14 @@
 package com.example.retrovideogameexchangeapi.endpoint_blls;
 
+import com.example.retrovideogameexchangeapi.endpoint_controllers.OfferController;
+import com.example.retrovideogameexchangeapi.endpoint_controllers.UserController;
+import com.example.retrovideogameexchangeapi.models.Offer;
 import com.example.retrovideogameexchangeapi.models.User;
 import com.example.retrovideogameexchangeapi.models.email.SendMail;
 import com.example.retrovideogameexchangeapi.repositories.UserJPARepository;
 import com.example.retrovideogameexchangeapi.util.MyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +17,10 @@ import org.springframework.stereotype.Service;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Service
 public class UserBLL {
@@ -27,6 +34,19 @@ public class UserBLL {
     private PasswordEncoder passEncoder;
 
     ////// Helper Methods for EndPoints ///////////////////////////////////////////////
+
+    public CollectionModel<User> getUsers() {
+        List<User> users = userJPA.findAll();
+
+        for(User user : users) {
+            for(Link link : generateUserLinks(user.getId())) {
+                user.add(link);
+            }
+        }
+
+        return CollectionModel.of(users, linkTo(UserController.class).withSelfRel());
+    }
+
     public User getUserInfo(String authHead, int id) {
         User currentUser = userJPA.getByEmailAddress(MyUtils.decodeAuth(authHead)[0]);
         User userInfo = userJPA.getFirstById(id);
@@ -71,11 +91,14 @@ public class UserBLL {
         if (userJPA.getFirstByEmailAddress(user.getEmailAddress()).isPresent()){
             throw new KeyAlreadyExistsException("A user with that email already exists!");
         }
-        userJPA.save(user);
+
         UserDetails newUser = org.springframework.security.core.userdetails.User.withUsername(user.getEmailAddress())
                 .password(passEncoder.encode(user.getPassword()))
                 .roles("USER").build();
         udm.createUser(newUser);
+
+        user.setPassword(newUser.getPassword());
+        userJPA.save(user);
         for(Link link : generateUserLinks(user.getId())){
             user.add(link);
         }
@@ -83,7 +106,6 @@ public class UserBLL {
     }
 
     public void forgotPassword(String authHead) {
-        //Remove Old User From InMemoryUserDetailsManager
         String tempNums = "1234567890";
         String tempLowLetters = "qwertyuiopasdfghjklmnbvcxz";
         String tempUpLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";
@@ -99,18 +121,19 @@ public class UserBLL {
             tempPassword.append(tempChars.charAt(rand.nextInt(tempChars.length())));
         }
 
-        User currentUser = userJPA.getByEmailAddress(MyUtils.decodeAuth(authHead)[0]);
+        User currentUser = userJPA.getByEmailAddress(authHead);
         if(currentUser != null) {
-            currentUser.setPassword(tempPassword.toString());
-            userJPA.save(currentUser);
 
             UserDetails newUser = org.springframework.security.core.userdetails.User.withUsername(currentUser.getEmailAddress())
-                    .password(passEncoder.encode(currentUser.getPassword()))
+                    .password(passEncoder.encode(tempPassword.toString()))
                     .roles("USER").build();
 
             udm.updateUser(newUser);
 
-            new SendMail(MyUtils.decodeAuth(authHead)[0], "Temporary Password", "Here is your temporary password: " + currentUser.getPassword());
+            currentUser.setPassword(newUser.getPassword());
+            userJPA.save(currentUser);
+
+            new SendMail(authHead, "Temporary Password", "Here is your temporary password: " + tempPassword);
         }
     }
 
@@ -138,13 +161,14 @@ public class UserBLL {
 
     public User changePassword(String authHead, String newPass) {
         User currentUser = userJPA.getByEmailAddress(MyUtils.decodeAuth(authHead)[0]);
-        currentUser.setPassword(newPass);
 
         UserDetails newUser = org.springframework.security.core.userdetails.User.withUsername(currentUser.getEmailAddress())
-                .password(passEncoder.encode(currentUser.getPassword()))
+                .password(passEncoder.encode(newPass))
                 .roles("USER").build();
 
         udm.updateUser(newUser);
+        currentUser.setPassword(newUser.getPassword());
+        userJPA.save(currentUser);
 
         for(Link link : generateUserLinks(currentUser.getId())) {
             currentUser.add(link);

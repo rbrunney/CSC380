@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import javax.persistence.EntityNotFoundException;
 
 @ControllerAdvice
 public class InternalExceptionOverride extends ResponseEntityExceptionHandler {
@@ -27,5 +28,17 @@ public class InternalExceptionOverride extends ResponseEntityExceptionHandler {
     public final ResponseEntity<ExceptionMessage> securityException(SecurityException se) {
         ExceptionMessage em = new ExceptionMessage(se.getMessage(), 401);
         return new ResponseEntity<>(em, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public final ResponseEntity<ExceptionMessage> entityNotFound(EntityNotFoundException enfe) {
+        ExceptionMessage em = new ExceptionMessage(enfe.getMessage(), 400);
+        return new ResponseEntity<>(em, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public final ResponseEntity<ExceptionMessage> entityNotFound(NullPointerException npe) {
+        ExceptionMessage em = new ExceptionMessage(npe.getMessage(), 400);
+        return new ResponseEntity<>(em, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

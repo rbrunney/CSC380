@@ -3,8 +3,11 @@ package com.example.retrovideogameexchangeapi.endpoint_controllers;
 import com.example.retrovideogameexchangeapi.endpoint_blls.UserBLL;
 import com.example.retrovideogameexchangeapi.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping(path="users")
@@ -18,6 +21,12 @@ public class UserController {
     @ResponseStatus(code=HttpStatus.OK)
     public User getUser(@RequestHeader(value="Authorization") String authHead, @PathVariable int id) {
         return userBLL.getUserInfo(authHead, id);
+    }
+
+    @GetMapping(path="")
+    @ResponseStatus(code=HttpStatus.OK)
+    public CollectionModel<User> getUsers() {
+        return userBLL.getUsers();
     }
 
     @PostMapping(path = "")
@@ -34,8 +43,8 @@ public class UserController {
 
     @GetMapping(path="/forgotPassword")
     @ResponseStatus(code=HttpStatus.OK)
-    public void sendTemporaryPassword(@RequestHeader(value="Authorization") String authHead) {
-        userBLL.forgotPassword(authHead);
+    public void sendTemporaryPassword(@RequestParam String email) {
+        userBLL.forgotPassword(email);
     }
 
     @PatchMapping(path="/updateName")

@@ -1,8 +1,6 @@
 package com.example.retrovideogameexchangeapi.endpoint_blls;
 
-import com.example.retrovideogameexchangeapi.endpoint_controllers.OfferController;
 import com.example.retrovideogameexchangeapi.endpoint_controllers.VideoGameController;
-import com.example.retrovideogameexchangeapi.models.Offer;
 import com.example.retrovideogameexchangeapi.models.User;
 import com.example.retrovideogameexchangeapi.models.VideoGame;
 import com.example.retrovideogameexchangeapi.repositories.UserJPARepository;
@@ -65,7 +63,7 @@ public class VideoGameBLL {
         VideoGame currentVideoGame = videoGameJPA.getById(id);
         User currentUser = userJPA.getByEmailAddress(MyUtils.decodeAuth(authHead)[0]);
         if(currentUser != null) {
-            if(currentVideoGame.getUser().equals(currentUser)) {
+            if(currentVideoGame.getUser().getId() == currentUser.getId()) {
                 videoGameJPA.delete(currentVideoGame);
             } else {
                 throw new SecurityException("Must be the the admin or the user who owns the game to delete it");
@@ -78,8 +76,13 @@ public class VideoGameBLL {
     public VideoGame updateVideoGame(String authHead, int id, VideoGame videoGame) {
         VideoGame currentVideoGame = videoGameJPA.getFirstById(id);
         User currentUser = userJPA.getByEmailAddress(MyUtils.decodeAuth(authHead)[0]);
-        if(currentVideoGame.getUser().equals(currentUser)) {
-            currentVideoGame = videoGameJPA.save(videoGame);
+        if(currentVideoGame.getUser().getId() == currentUser.getId()) {
+            videoGame.setId(currentVideoGame.getId());
+            videoGame.setUser(currentUser);
+            currentVideoGame = videoGame;
+            videoGameJPA.save(currentVideoGame);
+        } else {
+            throw new SecurityException("Cannot update a game that is not yours");
         }
 
         for(Link link : generateVideoGamesLinks(currentVideoGame.getId())) {
@@ -98,10 +101,9 @@ public class VideoGameBLL {
         String offersLink = String.format("http://localhost:8080/videoGames/%s/offers", id);
         String userLink = String.format("http://localhost:8080/videoGames/%s/user", id);
 
-
         //Creating Link
         Link linkSelf = Link.of(selfLink, "self");
-        Link linkPOJO = Link.of(POJOLink, "users");
+        Link linkPOJO = Link.of(POJOLink, "videoGames");
         Link linkOffers = Link.of(offersLink, "offers");
         Link linkUser = Link.of(userLink, "user");
 

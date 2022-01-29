@@ -115,6 +115,7 @@ public class OfferBLL {
             }
 
             checkOwnership(offer);
+            offer.setId(currentOffer.getId());
             currentOffer = offer;
             offerJPA.save(currentOffer);
         } else if(currentOffer.getReceivingUser().getId() == currentUser.getId()) {
@@ -137,6 +138,7 @@ public class OfferBLL {
                 currentOffer.setCurrentState(offer.getCurrentState());
             }
 
+            offer.setId(currentOffer.getId());
             currentOffer = offer;
             offerJPA.save(currentOffer);
         }

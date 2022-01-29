@@ -23,6 +23,7 @@ public class VideoGameController {
     }
 
     @PostMapping(path="")
+    @ResponseStatus(code=HttpStatus.CREATED)
     public VideoGame createVideoGame(@RequestHeader(value="Authorization") String authHead, @RequestBody VideoGame newGame) {
         return videoGameBLL.createVideoGame(authHead, newGame);
     }

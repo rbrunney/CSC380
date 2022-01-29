@@ -1,7 +1,5 @@
 package com.example.retrovideogameexchangeapi.models;
 
-import com.example.retrovideogameexchangeapi.util.ViewLevel;
-import com.fasterxml.jackson.annotation.JsonView;
 import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -42,7 +40,6 @@ public class Offer extends RepresentationModel<Offer> {
     @Column(nullable = false)
     private CurrentState currentState;
 
-    @JsonView(ViewLevel.PublicView.class)
     private String dateOfferMade = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(LocalDateTime.now());
 
     ///// Other Methods //////////////////////////
