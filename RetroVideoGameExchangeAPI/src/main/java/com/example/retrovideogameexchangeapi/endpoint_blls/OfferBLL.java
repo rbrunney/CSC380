@@ -64,17 +64,7 @@ public class OfferBLL {
         User user = userJPA.getByEmailAddress(MyUtils.decodeAuth(authHead)[0]);
 
         if(user != null) {
-            for(VideoGame game : offer.getOfferedVideoGames()) {
-                if(game.getUser().getId() != user.getId()) {
-                    throw new IllegalArgumentException("You can't offer somebody else's game");
-                }
-            }
-
-            for(VideoGame game : offer.getRequestedVideoGames()) {
-                if(game.getUser().getId() != offer.getReceivingUser().getId()) {
-                    throw new IllegalArgumentException("Make sure you are asking for the right user for the game");
-                }
-            }
+            checkOwnership(offer);
 
             if(offer.getCurrentState() != Offer.CurrentState.Pending) {
                 offer.setCurrentState(Offer.CurrentState.Pending);

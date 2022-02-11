@@ -1,0 +1,27 @@
+///// Network Docker Commands //////////////////////
+
+/** Creating a docker network
+docker network create csc380net
+docker network ls
+
+/** Creating a container for MySQL, but within the network we just created
+docker run --name csc380mysql -e MYSQL_ROOT_PASSWORD=testtest1 -e MYSQL_DATABASE=pets --net csc380net -p 1934:3306 mysql:latest
+
+/** Inspecting network
+docker inspect csc380net
+
+/** Inscpecting Database Container
+docker inspect csc380mysql
+
+
+///// Building Images /////////////////////////////
+
+/** Building Image for API
+docker build -f Dockerfile -t retrogamesapi:1.0 .
+
+/** Creating Image to Container
+docker run --name retrogameapi1 --net csc380net -p 27889:8080 retrogamesapi:1.0
+
+///// NGINX Load Balancer ////////////////////////
+/** Setting up load balancer
+

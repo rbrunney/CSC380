@@ -1,9 +1,5 @@
 package com.example.retrovideogameexchangeapi.models;
 
-
-import com.example.retrovideogameexchangeapi.util.ViewLevel;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
