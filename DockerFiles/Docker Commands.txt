@@ -22,6 +22,9 @@ docker build -f Dockerfile -t retrogamesapi:1.0 .
 /** Creating Image to Container
 docker run --name retrogameapi1 --net csc380net -p 27889:8080 retrogamesapi:1.0
 
-///// NGINX Load Balancer ////////////////////////
-/** Setting up load balancer
+/** Building Nginx Image
+docker build -f Nginx.dockerfile -t nginx:1.0 .
+
+/** Creating Image to Container (NGINX)
+docker run --name nginx --net csc380net -p 80:80 nginx:1.0
 
