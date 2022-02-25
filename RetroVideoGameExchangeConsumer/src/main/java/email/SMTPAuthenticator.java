@@ -1,4 +1,4 @@
-package com.example.retrovideogameexchangeapi.models.email;
+package email;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;

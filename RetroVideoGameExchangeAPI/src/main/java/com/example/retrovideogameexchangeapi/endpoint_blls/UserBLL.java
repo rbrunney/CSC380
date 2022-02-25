@@ -1,10 +1,7 @@
 package com.example.retrovideogameexchangeapi.endpoint_blls;
 
-import com.example.retrovideogameexchangeapi.endpoint_controllers.OfferController;
 import com.example.retrovideogameexchangeapi.endpoint_controllers.UserController;
-import com.example.retrovideogameexchangeapi.models.Offer;
 import com.example.retrovideogameexchangeapi.models.User;
-import com.example.retrovideogameexchangeapi.models.email.SendMail;
 import com.example.retrovideogameexchangeapi.repositories.UserJPARepository;
 import com.example.retrovideogameexchangeapi.util.MyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -133,7 +131,12 @@ public class UserBLL {
             currentUser.setPassword(newUser.getPassword());
             userJPA.save(currentUser);
 
-            new SendMail(authHead, "Temporary Password", "Here is your temporary password: " + tempPassword);
+            HashMap<String, String> message = new HashMap<>();
+            message.put("email", currentUser.getEmailAddress());
+            message.put("type", "passReset");
+            message.put("tempPass", tempPassword.toString());
+
+            MyUtils.createQueueMessage("email_queue", message);
         }
     }
 
@@ -169,6 +172,12 @@ public class UserBLL {
         udm.updateUser(newUser);
         currentUser.setPassword(newUser.getPassword());
         userJPA.save(currentUser);
+
+        HashMap<String, String> message = new HashMap<>();
+        message.put("email", currentUser.getEmailAddress());
+        message.put("type", "passChange");
+
+        MyUtils.createQueueMessage("email_queue", message);
 
         for(Link link : generateUserLinks(currentUser.getId())) {
             currentUser.add(link);

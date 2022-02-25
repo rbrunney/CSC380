@@ -13,6 +13,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -73,6 +74,12 @@ public class OfferBLL {
             offerJPA.save(offer);
         }
 
+        MyUtils.createQueueMessage("email_queue", new HashMap<String, String>() {{
+            put("email", user.getEmailAddress());
+            put("type", "offerMade");
+            put("receivingUser", offer.getReceivingUser().getEmailAddress());
+        }});
+
         for(Link link : generateOfferLinks(offer.getId())) {
             offer.add(link);
         }
@@ -124,8 +131,22 @@ public class OfferBLL {
                     game.setPreviousOwners(game.getPreviousOwners() + 1);
                 }
 
+                HashMap<String, String> message = new HashMap<>();
+                message.put("email", currentUser.getEmailAddress());
+                message.put("type", "offerAccepted");
+                message.put("offeringUser", offer.getOfferingUser().getEmailAddress());
+
+                MyUtils.createQueueMessage("email_queue", message);
+
             } else if(offer.getCurrentState() == Offer.CurrentState.Rejected) {
                 currentOffer.setCurrentState(offer.getCurrentState());
+
+                HashMap<String, String> message = new HashMap<>();
+                message.put("email", currentUser.getEmailAddress());
+                message.put("type", "offerRejected");
+                message.put("offeringUser", offer.getOfferingUser().getEmailAddress());
+
+                MyUtils.createQueueMessage("email_queue", message);
             }
 
             offer.setId(currentOffer.getId());

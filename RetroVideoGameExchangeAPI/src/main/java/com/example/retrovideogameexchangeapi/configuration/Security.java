@@ -40,7 +40,7 @@ public class Security extends WebSecurityConfigurerAdapter {
         List<com.example.retrovideogameexchangeapi.models.User> userList = userJPA.findAll();
         for (com.example.retrovideogameexchangeapi.models.User user : userList) {
             UserDetails databaseUser = User.withUsername(user.getEmailAddress())
-                    .password(passEncode().encode(user.getPassword()))
+                    .password(user.getPassword())
                     .roles("USER").build();
 
             memAuth.createUser(databaseUser);
