@@ -1,7 +1,6 @@
 import com.rabbitmq.client.*;
 import email.SendMail;
 
-import javax.security.auth.Subject;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
@@ -66,6 +65,9 @@ public class Main {
                             emailBody = String.format("You have rejected the offer for %s.", message.get("offeringUser"));
 
                             new SendMail(message.get("offeringUser"), subject, String.format("Your offer has been rejected by %s", message.get("email")));
+                            break;
+                        case "event":
+                            new SendMail(message.get("email"), message.get("subject"), message.get("emailBody"));
                             break;
                     }
 
