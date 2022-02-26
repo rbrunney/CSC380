@@ -19,7 +19,8 @@ docker inspect csc380mysql
 /** Building Image for API
 docker build -f Dockerfile -t retrogamesapi:1.0 .
 
-/** Creating Image to Container
+/** Creating Image to Containercls
+
 docker run --name retrogameapi1 --net csc380net -p 27889:8080 retrogamesapi:1.0
 
 /** Building Nginx Image

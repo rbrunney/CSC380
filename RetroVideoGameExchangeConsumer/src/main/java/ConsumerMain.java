@@ -5,12 +5,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
-public class Main {
+public class ConsumerMain {
     public static void main(String[] args) {
+        System.out.println("This is working :)");
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("localhost");
-            factory.setPort(9001);
+            factory.setHost("172.18.0.3");
+            factory.setPort(5672);
             factory.setUsername("guest");
             factory.setPassword("guest");
             Connection connection = factory.newConnection();

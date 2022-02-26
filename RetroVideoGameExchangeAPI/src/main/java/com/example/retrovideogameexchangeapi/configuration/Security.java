@@ -78,6 +78,7 @@ public class Security extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/{id}/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/videoGames/{id}/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/offers/{id}/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/admin/emailEvent").hasRole("ADMIN")
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable()

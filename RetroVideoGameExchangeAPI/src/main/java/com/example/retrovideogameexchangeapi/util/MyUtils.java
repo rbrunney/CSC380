@@ -20,8 +20,8 @@ public class MyUtils {
     public static void createQueueMessage(String queueName, HashMap<String, String> message) {
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("localhost");
-            factory.setPort(9001);
+            factory.setHost("172.18.0.3");
+            factory.setPort(5672);
             factory.setUsername("guest");
             factory.setPassword("guest");
             Connection connection = factory.newConnection();
