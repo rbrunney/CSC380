@@ -74,11 +74,12 @@ public class OfferBLL {
             offerJPA.save(offer);
         }
 
-        MyUtils.createQueueMessage("email_queue", new HashMap<String, String>() {{
-            put("email", user.getEmailAddress());
-            put("type", "offerMade");
-            put("receivingUser", offer.getReceivingUser().getEmailAddress());
-        }});
+        HashMap<String, String> message = new HashMap<>();
+        message.put("email", user.getEmailAddress());
+        message.put("type", "offerMade");
+        message.put("receivingUser", offer.getReceivingUser().getEmailAddress());
+
+        MyUtils.createQueueMessage("email_queue", message);
 
         for(Link link : generateOfferLinks(offer.getId())) {
             offer.add(link);
