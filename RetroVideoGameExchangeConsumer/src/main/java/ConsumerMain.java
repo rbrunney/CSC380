@@ -44,35 +44,35 @@ public class ConsumerMain {
                         case "passChange":
                             subject = "Password Changed";
                             emailBody = "Your password has been changed!";
+                            new SendMail(message.get("email"), subject, emailBody);
                             break;
                         case "passReset":
                             subject = "Password Reset";
                             emailBody = String.format("Here is your temporary password %s so you can resetPassword", message.get("tempPass"));
+                            new SendMail(message.get("email"), subject, emailBody);
                             break;
                         case "offerMade":
                             subject = "Offer Made";
                             emailBody = String.format("You have made and offer to %s.", message.get("email"));
-
+                            new SendMail(message.get("email"), subject, emailBody);
                             new SendMail(message.get("receivingUser"), "New Offer made on Game", "Login to see the new offer made for one of your games");
                             break;
                         case "offerAccepted":
                             subject = "Offer Accepted";
                             emailBody = String.format("You have accepted the offer for %s.", message.get("offeringUser"));
-
+                            new SendMail(message.get("email"), subject, emailBody);
                             new SendMail(message.get("offeringUser"), subject, "Your offer has been accepted enjoy your new games.");
                             break;
                         case "offerRejected":
                             subject = "Offer Rejected";
                             emailBody = String.format("You have rejected the offer for %s.", message.get("offeringUser"));
-
+                            new SendMail(message.get("email"), subject, emailBody);
                             new SendMail(message.get("offeringUser"), subject, String.format("Your offer has been rejected by %s", message.get("email")));
                             break;
                         case "event":
                             new SendMail(message.get("email"), message.get("subject"), message.get("emailBody"));
                             break;
                     }
-
-                    new SendMail(message.get("email"), subject, emailBody);
                 }
             };
             channel.basicConsume("email_queue", true, consumer);
