@@ -14,6 +14,10 @@ import java.util.HashMap;
 @RequestMapping("admin")
 public class AdminController {
 
+    /**
+     * An end-point to send a message to RabbitMQ where ADMINS can create event emails.
+     * @param emailInfo JSON object containing the receiver email, email subject, and email body.
+     */
     @PostMapping("/emailEvent")
     @ResponseStatus(HttpStatus.OK)
     public void emailEvent(@RequestBody JSONObject emailInfo) {

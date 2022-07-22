@@ -10,7 +10,7 @@ public class ConsumerMain {
         System.out.println("This is working :)");
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("172.18.0.3");
+            factory.setHost("rabbitMQ");
             factory.setPort(5672);
             factory.setUsername("guest");
             factory.setPassword("guest");
