@@ -41,7 +41,7 @@
 <br>
 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-This basic RetroGameExchangeAPI project was made in order to learn Distributed Systems. Also during tis project we got a glimpse into understanding how to implement HATEOS (Hypermedia as the Engine of Application State) within our REST API. Some of the technologies used in the project include Spring Boot, MySQL, Docker, and RabbitMQ. 
+This basic RetroGameExchangeAPI project was made in order to learn Distributed Systems. Also during tis project we got a glimpse into understanding how to implement HATEOS (Hypermedia as the Engine of Application State) within our REST API. Some of the technologies used in the project include Spring Boot, MySQL, Docker, RabbitMQ, and NGINX. 
 
 <br>
 <div class="header" align="center">
@@ -147,12 +147,16 @@ This basic RetroGameExchangeAPI project was made in order to learn Distributed S
 
     If done properly you will get an output as shown below.
 
+    ![networkCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/Docker%20Network.PNG?raw=true)
+
 7. Once the network has been created lets start building our database with the following command
 
     ```
     docker run --name RetroGameDB -e MYSQL_ROOT_PASSWORD=abcABC123!! -e MYSQL_DATABASE=RetroExchange --net retroGameNet -p 9000:3306 mysql:latest
     ```
-    If done properly you will get an output in docker as shown below
+    If done properly you will get an output in docker as shown below.
+    
+    ![databaseCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/RetroGameDB.PNG?raw=true)
 
 8. After making our database lets go ahead and set up the Message Queue Service next. Use the following command below
 
@@ -165,7 +169,9 @@ This basic RetroGameExchangeAPI project was made in order to learn Distributed S
     ```
     http://localhost:9002
     ```
-    You will get an output like below
+    You will get an output like below.
+    
+    ![rabbitMQCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/RabbitMQ.PNG?raw=true)
 
     It will ask you to log in and the default username and password are below
 
@@ -175,28 +181,39 @@ This basic RetroGameExchangeAPI project was made in order to learn Distributed S
     ```
     Once logged in you will be brought to a page as shown below.
 
+    ![loginCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/RabbitMQ_Login.PNG?raw=true)
+
 9. Once RabbitMQ is up and running it is now time to build and run the RetroGameAPI Image. Use the command below to get started.
     ```
     docker build -f RetroApi.dockerfile -t retrogameapi:1.0 .
     ```
     If done properly underneath the Images tab on Docker Desktop you will get an output as shown below.
 
+    ![apiImageCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/RetroGameImage.PNG?raw=true)
+
     Once the image is made lets build the container for the API. Use the ommand below to get started.
     ```
     docker run --name retrogameapi1 --net retroGameNet -e DB_HOST=RetroGameDB -e DB_PORT=3306 -e DB_USER=root -e DB_PASSWORD=abcABC123!! -p 9003:8080 retrogameapi:1.0
     ```
     If done properly you will get an output as shown below.
+
+    ![apiContainerCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/RetroAPIContainer.PNG?raw=true)
+    
 10. Now that we have built our container for our API we need to follow similar steps to build our Consumer for RabbitMQ. To begin use the command as shown below.
     ```
     docker build -f RetroConsumer.dockerfile -t retroconsumer:1.0 .
     ```
     If done properly underneath the Images tab on Docker Desktop you will get an output as shown below.
 
+    ![consumerImageCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/Retro%20Consumer.PNG?raw=true)
+
     Net we will need to containerize our program. Use the command as shown below.
     ```
     docker run --name retroconsumer --net retroGameNet retroconsumer:1.0
     ```
     If done properly you will get an output as shown below.
+
+    ![consumerContainerCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/RetroConsumerContainer.PNG?raw=true)
 
 11. Last step to get this project fully running is to get NGINX running to show load balancing. But before we build our image and container lets run another instance of our RetroGameAPI. Use the command as shown below.
 
@@ -206,17 +223,23 @@ This basic RetroGameExchangeAPI project was made in order to learn Distributed S
 
     If done properly you should get an output as shown below.
 
+    ![api2ContainerCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/RetroGameAPI2.PNG?raw=true)
+
     With the two instances of our RetroGameExcange-API lets build and containerize our instance of NGINX. Use the command as shown below to build the Image.
     ```
     docker build -f Nginx.dockerfile -t nginx:1.0 .
     ```
     If done properly underneath the Images tab on Docker Desktop you will get an output as shown below.
+
+    ![NGINXImageCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/NGINX_img.PNG?raw=true)
     
     Lastly we need to build our container for NGINX. Use the command as shown below.
     ```
     docker run --name nginx --net retroGameNet -p 80:80 nginx:1.0
     ```
     If done properly you should get an output as shown below.
+
+    ![NGINXContainerCheck](https://github.com/rbrunney/RetroGameExchange-API/blob/master/README%20Imgs/NGINX-Container.PNG?raw=true)
 12. Now we have everything completed and its ready to interact with. Start up Postman and begin tetsing different end-points! API Documentation and Example Request can be found using the below link.
 
     (Documentation and Sample Request Coming Soon)
