@@ -5,7 +5,7 @@
 </div>
 <br>
 <div class="mainDescription" align="center">
-    A Retro Game Exchange API used to learn about Distributed Systems
+    A Retro Game Exchange API built to learn about Distributed Systems
 </div>
 <br>
 <br>
